@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const PORT = process.env.PORT || 8000;
 
 const express = require('express');
@@ -23,11 +25,8 @@ app.use(express.static('public'))
 // ROUTES
 
 app.get('/', (req, res, next) => {
-
   Cat.getAll(function(err, cats) {
-
     res.render('index', { title: "My Awesome Page", cats });
-
   });
 });
 
@@ -51,8 +50,6 @@ app.route('/cats')
   })
   .post((req, res) => {
     // POST /cats  -  create a new cat
-    // console.log('req.body:', req.body);
-    // res.send(req.body);
 
     Cat.create(req.body, function(err) {
       if(err) {
@@ -91,7 +88,7 @@ app.route('/cats/:id')
   });
 
 
-////////////////////////////////////////
+////////////////////////////////
 app.listen(PORT, err => {
   console.log(err || `Server listening on port ${PORT}`);
 });

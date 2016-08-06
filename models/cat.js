@@ -1,29 +1,30 @@
+const connection = require('../config/db');
+
 const fs = require('fs');
 const path = require('path');
 const uuid = require('uuid');
+const squel = require('squel').useFlavour('mysql');
 
 const dataFilePath = path.join(__dirname, '../data/cats.json');
 
-exports.getAll = function(cb) {
-  fs.readFile(dataFilePath, (err, buffer) => {
+connection.query(`create table if not exists city (
+    id varchar(50),
+    name varchar(50),
+    location varchar(50),
+    population int
+  )`, err => {
     if(err) {
-      cb(err);
-      return;
-    } 
-
-    let cats;
-
-    try {
-      cats = JSON.parse(buffer);
-    } catch(err) {
-      cb(err);
-      return;
+      console.log('table create err:', err);
     }
+  })
 
-    // cats!!!
-    cb(null, cats);
+exports.getAll = function(cb) {
+
+  let sql = squel.select().from('city').toString();
+
+  connection.query(sql, (err, cities) => {
+    cb(err, cities);
   });
-
 }
 
 exports.remove = function(catId, cb) {
